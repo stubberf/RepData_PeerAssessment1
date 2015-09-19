@@ -49,9 +49,9 @@ qplot(by_day$num_steps, xlab="Number of Steps in a Day",
 
 Next, using the number of steps taken each day we determine the mean and median.
 ```{r}
-mean_and_median = data.frame("mean"=mean(by_day$num_steps),
-                           "median"=median(by_day$num_steps))
-head(mean_and_median)
+by_day <- group_by(dat, date) %>% summarize(mean=mean(steps, na.rm=TRUE),
+                                            median=median(steps, na.rm=TRUE))
+print(by_day)
 ```
 
 
@@ -107,20 +107,24 @@ there are no more missing values.
 sum(is.na(dat2$steps))
 ```
 
-We now recreate the histogram and determine the mean and median of our new 
-dataset
+We now recreate the histogram from our new dataset
 ```{r}
 by_day <- group_by(dat2, date) %>% summarize(num_steps=sum(steps, na.rm=TRUE))
 
 qplot(by_day$num_steps, xlab="Number of Steps in a Day", 
       main="Histogram of Steps Taken Each Day")
-
-mean_and_median = data.frame("mean"=mean(by_day$num_steps),
-                           "median"=median(by_day$num_steps))
-print(mean_and_median)
 ```
-The values differ from those we looked at originally. Both the mean and median 
-have increased using the dataset with no missing values. 
+
+Also lets determine the mean and median of the number of steps take per a day of
+our new dataset
+```{r}
+by_day <- group_by(dat2, date) %>% summarize(mean=mean(steps, na.rm=TRUE),
+                                            median=median(steps, na.rm=TRUE))
+print(by_day)
+```
+
+The values differ from those we looked at originally. For those days with 
+missing data we now have both a mean and median. 
 
 
 

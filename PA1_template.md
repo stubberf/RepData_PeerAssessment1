@@ -99,14 +99,26 @@ qplot(by_day$num_steps, xlab="Number of Steps in a Day",
 Next, using the number of steps taken each day we determine the mean and median.
 
 ```r
-mean_and_median = data.frame("mean"=mean(by_day$num_steps),
-                           "median"=median(by_day$num_steps))
-head(mean_and_median)
+by_day <- group_by(dat, date) %>% summarize(mean=mean(steps, na.rm=TRUE),
+                                            median=median(steps, na.rm=TRUE))
+print(by_day)
 ```
 
 ```
-##      mean median
-## 1 9354.23  10395
+## Source: local data frame [61 x 3]
+## 
+##          date     mean median
+## 1  2012-10-01      NaN     NA
+## 2  2012-10-02  0.43750      0
+## 3  2012-10-03 39.41667      0
+## 4  2012-10-04 42.06944      0
+## 5  2012-10-05 46.15972      0
+## 6  2012-10-06 53.54167      0
+## 7  2012-10-07 38.24653      0
+## 8  2012-10-08      NaN     NA
+## 9  2012-10-09 44.48264      0
+## 10 2012-10-10 34.37500      0
+## ..        ...      ...    ...
 ```
 
 
@@ -185,8 +197,7 @@ sum(is.na(dat2$steps))
 ## [1] 0
 ```
 
-We now recreate the histogram and determine the mean and median of our new 
-dataset
+We now recreate the histogram from our new dataset
 
 ```r
 by_day <- group_by(dat2, date) %>% summarize(num_steps=sum(steps, na.rm=TRUE))
@@ -201,18 +212,34 @@ qplot(by_day$num_steps, xlab="Number of Steps in a Day",
 
 ![](PA1_template_files/figure-html/unnamed-chunk-13-1.png) 
 
+Also lets determine the mean and median of the number of steps take per a day of
+our new dataset
+
 ```r
-mean_and_median = data.frame("mean"=mean(by_day$num_steps),
-                           "median"=median(by_day$num_steps))
-print(mean_and_median)
+by_day <- group_by(dat2, date) %>% summarize(mean=mean(steps, na.rm=TRUE),
+                                            median=median(steps, na.rm=TRUE))
+print(by_day)
 ```
 
 ```
-##       mean   median
-## 1 10766.19 10766.19
+## Source: local data frame [61 x 3]
+## 
+##          date     mean   median
+## 1  2012-10-01 37.38260 34.11321
+## 2  2012-10-02  0.43750  0.00000
+## 3  2012-10-03 39.41667  0.00000
+## 4  2012-10-04 42.06944  0.00000
+## 5  2012-10-05 46.15972  0.00000
+## 6  2012-10-06 53.54167  0.00000
+## 7  2012-10-07 38.24653  0.00000
+## 8  2012-10-08 37.38260 34.11321
+## 9  2012-10-09 44.48264  0.00000
+## 10 2012-10-10 34.37500  0.00000
+## ..        ...      ...      ...
 ```
-The values differ from those we looked at originally. Both the mean and median 
-have increased using the dataset with no missing values. 
+
+The values differ from those we looked at originally. For those days with 
+missing data we now have both a mean and median. 
 
 
 
@@ -241,7 +268,7 @@ qplot(interval, avg_steps, data=by_day_interval, geom="line",
       main="Avg. Number of Steps By Interval", facets=day~.)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
 
 During the weekday there is a large peak in the average number of steps taken early in the morning compared to the weekend, which has larger average number of
 steps taken throughout the day. The large peak during the weekday is likely the 
